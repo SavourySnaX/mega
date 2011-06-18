@@ -150,5 +150,8 @@ U32 SH2_TSTB_IMMEDIATE_AT_R0_GBR(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 o
 U32 SH2_LDCL_AT_RM_INC_GBR(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
 U32 SH2_NEGC_RM_RN(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
 U32 SH2_BRAF_RM(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
+U32 SH2_ROTL_RN(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
+U32 SH2_SETT(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
+U32 SH2_ROTCR_RN(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
 
 #endif/*__SH2_OPS_H*/

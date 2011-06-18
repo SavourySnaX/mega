@@ -78,8 +78,15 @@ void SH2_IO_WRITE_DVDNTLL(SH2_State* cpu,U8 byte)
 	divisor=sorTmp;
 	dividend=endTmp;
 
-	remainder=dividend%divisor;
-	quotient=dividend/divisor;
+	if (divisor!=0)
+	{
+		remainder=dividend%divisor;
+		quotient=dividend/divisor;
+	}
+	else
+	{
+		remainder=quotient=0;
+	}
 
 	/* TODO handle overflow */
 
@@ -106,8 +113,6 @@ void SH2_IO_WRITE_DVDNTLLL(SH2_State* cpu,U8 byte)
 	S32 remainder;
 	S64 quotient;
 
-	S64 tmp;
-
 	UNUSED_ARGUMENT(byte);
 
 	/* TODO - Set flag indicating division in progress, so we can delay reads from results register until operation complete */
@@ -131,12 +136,15 @@ void SH2_IO_WRITE_DVDNTLLL(SH2_State* cpu,U8 byte)
 	divisor=sorTmp;
 	dividend=endTmp;
 
-	remainder=dividend%divisor;
-	quotient=dividend/divisor;
-
-	tmp = quotient * divisor;
-	tmp = dividend - tmp;
-	
+	if (divisor!=0)
+	{
+		remainder=dividend%divisor;
+		quotient=dividend/divisor;
+	}
+	else
+	{
+		remainder=quotient=0;
+	}
 
 	/* TODO - handle overflow */
 

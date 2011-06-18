@@ -46,6 +46,7 @@ THE SOFTWARE.
 #include "sh2_memory.h"
 #include "sh2_ioregisters.h"
 
+#define		BREAK_ON_INTERRUPT		0
 #define		INTERRUPTS_ENABLED		1
 
 #if 1
@@ -68,6 +69,9 @@ U32 BPAddress=0x020045d6;
 
 SH2_Ins SH2_Instructions[] = 
 {
+	{"0100nnnn00100101","ROTCR Rn",SH2_ROTCR_RN,SH2_DIS_ROTCR_RN,1,{0x0F00},{8},{1},{{"rrrr"}}},
+	{"0000000000011000","SETT",SH2_SETT,SH2_DIS_SETT,0,{0},{0},{0},{{""}}},
+	{"0100nnnn00000100","ROTL Rn",SH2_ROTL_RN,SH2_DIS_ROTL_RN,1,{0x0F00},{8},{1},{{"rrrr"}}},
 	{"0000mmmm00100011","BRAF Rm",SH2_BRAF_RM,SH2_DIS_BRAF_RM,1,{0x0F00},{8},{1},{{"rrrr"}}},
 	{"0110nnnnmmmm1010","NEGC Rm,Rn",SH2_NEGC_RM_RN,SH2_DIS_NEGC_RM_RN,2,{0x0F00,0x00F0},{8,4},{1,1},{{"rrrr"},{"rrrr"}}},
 	{"0100mmmm00010111","LDC.L @Rm+,GBR",SH2_LDCL_AT_RM_INC_GBR,SH2_DIS_LDCL_AT_RM_INC_GBR,1,{0x0F00},{8},{1},{{"rrrr"}}},
@@ -808,7 +812,9 @@ void SH2_Step(SH2_State* cpu)
 			cpu->PC=SH2_Read_Long(cpu,cpu->VBR+(68*4),1);
 			cpu->SR|=9<<4;
 			cpu->interrupt=0;
+#if BREAK_ON_INTERRUPT
 			DEB_PauseEmulation(cpu->pauseMode,"SH2 CMD Interrupt");
+#endif
 		}
 #endif
 #if INTERRUPTS_ENABLED
@@ -823,7 +829,9 @@ void SH2_Step(SH2_State* cpu)
 			cpu->PC=SH2_Read_Long(cpu,cpu->VBR+(69*4),1);
 			cpu->SR|=11<<4;
 			cpu->interrupt=0;
+#if BREAK_ON_INTERRUPT
 			DEB_PauseEmulation(cpu->pauseMode,"SH2 H Interrupt");
+#endif
 		}
 #endif
 #if INTERRUPTS_ENABLED
@@ -838,7 +846,9 @@ void SH2_Step(SH2_State* cpu)
 			cpu->PC=SH2_Read_Long(cpu,cpu->VBR+(71*4),1);
 			cpu->SR|=15<<4;
 			cpu->interrupt=0;
-			DEB_PauseEmulation(cpu->pauseMode,"SH2 V Interrupt");
+#if BREAK_ON_INTERRUPT
+			DEB_PauseEmulation(cpu->pauseMode,"SH2 V Interrupt");a
+#endif
 		}
 #endif
 	}

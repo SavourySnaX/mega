@@ -152,5 +152,8 @@ U16 SH2_DIS_TSTB_IMMEDIATE_AT_R0_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 
 U16 SH2_DIS_LDCL_AT_RM_INC_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
 U16 SH2_DIS_NEGC_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
 U16 SH2_DIS_BRAF_RM(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
+U16 SH2_DIS_ROTL_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
+U16 SH2_DIS_SETT(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
+U16 SH2_DIS_ROTCR_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8);
 
 #endif/*__SH2_DIS_H*/

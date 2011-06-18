@@ -2237,10 +2237,12 @@ void VID_DrawScreen(int y)
 #if ENABLE_32X_MODE
 		Draw32XScreenRow(y,pixel,zPos);
 #endif
+#if 1
 		DrawScreenRow(y,0,0x02,pixel,zPos);
 		DrawScreenRow(y,1,0x01,pixel,zPos);
 		DrawSpritesForLine(128+y,0x04);
 		ComputeSpritesForNextLine(128+y+1);
+#endif
 	}
 }
 #else

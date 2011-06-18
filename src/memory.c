@@ -1639,15 +1639,19 @@ void FIFO_ADD(U16 data)
 {
 	if (curFifoWrite==8)
 	{
-		DREQControlRegister|=0x80;				/* Set FIFO full now */
 		return;
 	}
-	DREQControlRegister&=~0x80;				/* Set FIFO free now */
 	FIFO_BUFFER[curFifoWrite]=data;
 	curFifoWrite++;
 
 	SH2_SignalDAck(master);
 	SH2_SignalDAck(slave);
+
+	if (curFifoWrite==8)
+	{
+		DREQControlRegister|=0x80;				/* Set FIFO full now */
+		return;
+	}
 }
 
 U16 FIFO_GET()
@@ -1786,15 +1790,15 @@ void MD_SYS_32X_WRITE(U16 adr,U8 byte)
 		return;
 	case 0x03:
 		InterruptControlRegister&=0xFF00;
-		InterruptControlRegister|=byte&0xFF;
-		if (InterruptControlRegister&0x01)
+/*		InterruptControlRegister|=byte&0xFF;	*/
+		if (byte&0x01)
 		{
 			if (SH2_Master_AdapterControlRegister&0x02)
 			{
 				SH2_Interrupt(master,9);
 			}
 		}
-		if (InterruptControlRegister&0x02)
+		if (byte&0x02)
 		{
 			if (SH2_Slave_AdapterControlRegister&0x02)
 			{

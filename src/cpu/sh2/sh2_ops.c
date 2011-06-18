@@ -59,6 +59,107 @@ U32 SH2_CheckGlobalHazard(SH2_State* cpu,U32 hazardMask)
 	return 0;
 }
 
+U32 SH2_ROTCR_RN(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+	
+	switch (stage)
+	{
+	case 1:									/* Instruction Decode */
+		return 2;
+	case 2:									/* Execute */
+		if (SH2_CheckRegisterHazard(cpu,slot,&cpu->R[op1]))
+			return 2;
+		cpu->pipeLine[slot].RegHazard=NULL;
+		if (cpu->SR&SH2_SR_T)
+		{
+			cpu->pipeLine[slot].EA=0x80000000;
+		}
+		else
+		{
+			cpu->pipeLine[slot].EA=0x00000000;
+		}
+		if (cpu->R[op1]&0x00000001)
+		{
+			cpu->SR|=SH2_SR_T;
+		}
+		else
+		{
+			cpu->SR&=~SH2_SR_T;
+		}
+		cpu->R[op1]>>=1;
+		cpu->R[op1]&=0x7FFFFFFF;
+		cpu->R[op1]|=cpu->pipeLine[slot].EA;
+		return 0;
+	}
+	return 0;
+}
+
+U32 SH2_SETT(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(slot);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+	
+	switch (stage)
+	{
+	case 1:									/* Instruction Decode */
+		return 2;
+	case 2:									/* Execute - Condition true */
+		cpu->SR|=SH2_SR_T;
+		return 0;
+	}
+	return 0;
+}
+
+U32 SH2_ROTL_RN(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+	
+	switch (stage)
+	{
+	case 1:									/* Instruction Decode */
+		return 2;
+	case 2:									/* Execute */
+		if (SH2_CheckRegisterHazard(cpu,slot,&cpu->R[op1]))
+			return 2;
+		cpu->pipeLine[slot].RegHazard=NULL;
+		if (cpu->R[op1]&0x80000000)
+		{
+			cpu->SR|=SH2_SR_T;
+			cpu->pipeLine[slot].EA=0x00000001;
+		}
+		else
+		{
+			cpu->SR&=~SH2_SR_T;
+			cpu->pipeLine[slot].EA=0x00000000;
+		}
+		cpu->R[op1]<<=1;
+		cpu->R[op1]&=0xFFFFFFFE;
+		cpu->R[op1]|=cpu->pipeLine[slot].EA;
+		return 0;
+	}
+	return 0;
+}
+
 U32 SH2_BRAF_RM(SH2_State* cpu,U32 stage,U32 slot,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
 {
 	UNUSED_ARGUMENT(op2);
