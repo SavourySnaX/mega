@@ -52,6 +52,9 @@ extern U8 *vsRam;
 
 extern U8 VDP_Registers[0x20];
 void doPixel(int x,int y,U8 colHi,U8 colLo);
+void doPixel32(int x,int y,U32 colour);
+
+extern U8 CRAM[0x200];
 
 #if ENABLE_DEBUGGER
 
@@ -98,6 +101,24 @@ void PrintAt(int cMask1,int cMask2,U32 x,U32 y,const char *msg,...)
 		DrawChar(x,y,*pMsg,cMask1,cMask2);
 		x++;
 		pMsg++;
+	}
+}
+
+void DisplayWindow32(U32 x,U32 y, U32 w, U32 h, U32 colour)
+{
+	U32 xx,yy;
+	x*=8;
+	y*=8;
+	w*=8;
+	h*=8;
+	w+=x;
+	h+=y;
+	for (yy=y;yy<h;yy++)
+	{
+		for (xx=x;xx<w;xx++)
+		{
+			doPixel32(xx,yy,colour);
+		}
 	}
 }
 
@@ -172,6 +193,133 @@ void ShowCPUState(int offs)
 		   cpu_regs.SR & 0x0002 ? " 1" : " 0",
 		   cpu_regs.SR & 0x0001 ? " 1" : " 0");
 }
+
+#if ENABLE_32X_MODE
+
+#include "sh2.h"
+#include "sh2_memory.h"
+
+extern SH2_State* master;
+extern SH2_State* slave;
+
+void ShowSH2State(SH2_State* cpu)
+{
+	DisplayWindow(0,1+0,66,10,0,0);
+	PrintAt(0x0F,0xFF,1,1+1,"R00 =%08X\tR01 =%08X\tR02 =%08X\tR03 =%08X\n",cpu->R[0],cpu->R[1],cpu->R[2],cpu->R[3]);
+	PrintAt(0x0F,0xFF,1,1+2,"R04 =%08X\tR05 =%08X\tR06 =%08X\tR07 =%08X\n",cpu->R[4],cpu->R[5],cpu->R[6],cpu->R[7]);
+	PrintAt(0x0F,0xFF,1,1+3,"R08 =%08X\tR09 =%08X\tR10 =%08X\tR11 =%08X\n",cpu->R[8],cpu->R[9],cpu->R[10],cpu->R[11]);
+	PrintAt(0x0F,0xFF,1,1+4,"R12 =%08X\tR13 =%08X\tR14 =%08X\tR15 =%08X\n",cpu->R[12],cpu->R[13],cpu->R[14],cpu->R[15]);
+	PrintAt(0x0F,0xFF,1,1+5,"\n");
+	PrintAt(0x0F,0xFF,1,1+6,"MACH=%08X\tMACL=%08X\tPR  =%08X\tPC  =%08X\n",cpu->MACH,cpu->MACL,cpu->PR,cpu->PC);
+	PrintAt(0x0F,0xFF,1,1+7,"GBR =%08X\tVBR =%08X\n",cpu->GBR,cpu->VBR);
+	PrintAt(0x0F,0xFF,1,1+9,"          [   :  :  :  :  :  : M: Q:I3:I2:I1:I0:  :  : S: T ]\n");
+	PrintAt(0x0F,0xFF,1,1+10,"SR = %04X [ %s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s ]\n", cpu->SR&0xFFFF, 
+		cpu->SR & 0x8000 ? " 1" : " 0",
+		cpu->SR & 0x4000 ? " 1" : " 0",
+		cpu->SR & 0x2000 ? " 1" : " 0",
+		cpu->SR & 0x1000 ? " 1" : " 0",
+		cpu->SR & 0x0800 ? " 1" : " 0",
+		cpu->SR & 0x0400 ? " 1" : " 0",
+		cpu->SR & 0x0200 ? " 1" : " 0",
+		cpu->SR & 0x0100 ? " 1" : " 0",
+		cpu->SR & 0x0080 ? " 1" : " 0",
+		cpu->SR & 0x0040 ? " 1" : " 0",
+		cpu->SR & 0x0020 ? " 1" : " 0",
+		cpu->SR & 0x0010 ? " 1" : " 0",
+		cpu->SR & 0x0008 ? " 1" : " 0",
+		cpu->SR & 0x0004 ? " 1" : " 0",
+		cpu->SR & 0x0002 ? " 1" : " 0",
+		cpu->SR & 0x0001 ? " 1" : " 0");
+	PrintAt(0x0F,0xFF,1,1+12,"PipeLine : %d\t%d\t%d\t%d\t%d\n",cpu->pipeLine[0].stage,cpu->pipeLine[1].stage,cpu->pipeLine[2].stage,cpu->pipeLine[3].stage,cpu->pipeLine[4].stage);
+	PrintAt(0x0F,0xFF,1,1+13,"PipeLine : %04X\t%04X\t%04X\t%04X\t%04X\n",cpu->pipeLine[0].opcode,cpu->pipeLine[1].opcode,cpu->pipeLine[2].opcode,cpu->pipeLine[3].opcode,cpu->pipeLine[4].opcode);
+}
+
+extern SH2_Ins		*SH2_Information[65536];
+extern SH2_Decode	SH2_DisTable[65536];
+
+U32 SH2_GetOpcodeLength(SH2_State* cpu,U32 address)
+{
+	U16	opcode;
+	U16	operands[8];
+	U32	insCount;
+	S32	a;
+
+	opcode = SH2_Debug_Read_Word(cpu,address);
+
+	if (SH2_Information[opcode])
+	{
+		for (a=0;a<SH2_Information[opcode]->numOperands;a++)
+		{
+			operands[a] = (opcode & SH2_Information[opcode]->operandMask[a]) >> 
+									SH2_Information[opcode]->operandShift[a];
+		}
+	}
+			
+	insCount=SH2_DisTable[opcode](cpu,address+1,operands[0],operands[1],operands[2],
+						operands[3],operands[4],operands[5],operands[6],operands[7]);
+
+	return insCount;
+}
+
+extern char SH2_mnemonicData[256];
+
+U32 SH2_DissasembleAddress(U32 x,U32 y,U32 address,SH2_State* cpu,int cursor)
+{
+	U32	insCount;
+/*	S32	a;*/
+	U32 b;
+	int cMask1=0x0F,cMask2=0xFF;
+	
+	insCount=SH2_GetOpcodeLength(cpu,address);		/* note this also does the disassemble */
+/*
+	for (a=0;a<Z80_numBps;a++)
+	{
+		if (address == Z80_bpAddresses[a])
+		{
+			cMask1=0x0F;
+			cMask2=0x00;
+			break;
+		}
+	}
+	*/
+	if (cursor)
+	{
+		PrintAt(cMask1,cMask2,x,y,"%08X >",address);
+	}
+	else
+	{
+		PrintAt(cMask1,cMask2,x,y,"%08X ",address);
+	}
+	
+	for (b=0;b<insCount+1;b++)
+	{
+		PrintAt(cMask1,cMask2,x+10+b*5,y,"%04X ",SH2_Debug_Read_Word(cpu,address+b*2));
+	}
+			
+	PrintAt(cMask1,cMask2,x+30,y,"%s",SH2_mnemonicData);
+	
+	return insCount+1;
+}
+
+void DisplaySH2Dis(SH2_State* cpu)
+{
+	int a;
+	U32 address = cpu->pipeLine[0].PC;
+
+	if (cpu->pipeLine[0].stage==0)
+	{
+		address=cpu->PC;
+	}
+
+	DisplayWindow(0,19+0,70,12,0,0);
+	for (a=0;a<10;a++)
+	{
+		address+=2*SH2_DissasembleAddress(1,20+a+0,address,cpu,0);
+	}
+}
+
+
+#endif
 
 U32 GetOpcodeLength(U32 address)
 {
@@ -655,6 +803,27 @@ void DisplayPalette()
 			DisplayWindow(30+x,0x14+32+(y*2),1,1,r,gb);
 		}
 	}
+#if ENABLE_32X_MODE
+	for (y=0;y<16;y++)
+	{
+		for (x=0;x<16;x++)
+		{
+			U32 colour;
+			U8 bg=0;
+			U8 gr=0;
+			bg=CRAM[(x+y*16)*2+0];
+			gr=CRAM[(x+y*16)*2+1];
+
+			colour=0;
+			colour|=(gr&0x1F)<<(3+8+8);
+			colour|=(bg&0x7C)<<(1);
+			colour|=(bg&0x03)<<(6+8);
+			colour|=(gr&0xE0)<<(8-2);
+
+			DisplayWindow32(40+x,0x14+32+(y*2),1,1,colour);
+		}
+	}
+#endif
 }
 
 void SMS_DisplayPalette()
@@ -747,6 +916,24 @@ void DisplaySprites()
 	}
 }
 
+#if ENABLE_32X_MODE
+extern U8 SH2_68K_COMM_REGISTER[16];
+extern U16 FIFO_BUFFER[8];
+
+void DisplayComm()
+{
+	int y;
+
+	for (y=0;y<8;y++)
+	{
+		PrintAt(0x0F,0xFF,60+y*4,0x12+39,"%04X",FIFO_BUFFER[y]);
+	}
+	for (y=0;y<16;y++)
+	{
+		PrintAt(0x0F,0xFF,60+y*2,0x12+40,"%02X",SH2_68K_COMM_REGISTER[y]);
+	}
+}
+#endif
 void DisplayCustomRegs()
 {
 	int y;
@@ -1047,7 +1234,9 @@ void DisplayDebugger()
 			DisplayHelp();
 		
 			DisplayCustomRegs();
-		
+#if ENABLE_32X_MODE
+			DisplayComm();
+#endif	
 			Display68000Dis(0);
 		}
 		if (dbMode==1)
@@ -1083,7 +1272,28 @@ void DisplayDebugger()
 #else
 			SMS_DisplayCustomRegs();
 #endif
+#if ENABLE_32X_MODE
+			DisplayComm();
+#endif
 		}
+#if ENABLE_32X_MODE
+		if (dbMode==DEB_Mode_SH2_Master)
+		{
+			ShowSH2State(master);
+
+			DisplaySH2Dis(master);
+			
+			DisplayComm();
+		}
+		if (dbMode==DEB_Mode_SH2_Slave)
+		{
+			ShowSH2State(slave);
+
+			DisplaySH2Dis(slave);
+			
+			DisplayComm();
+		}
+#endif
 		
 		g_newScreenNotify=1;
 	}
@@ -1091,6 +1301,7 @@ void DisplayDebugger()
 
 extern U32 Z80Cycles;
 
+#define ENABLE_PC_HISTORY		0
 int UpdateDebugger()
 {
 	int a;
@@ -1198,10 +1409,24 @@ int UpdateDebugger()
 			g_pause=1;
 			stageCheck=0;
 		}
+
+		if (stageCheck==(DEB_Mode_SH2_Master+1))
+		{
+			g_pause=1;
+			stageCheck=0;
+		}
 	}
 
-	if (g_pause || (stageCheck==3) || (stageCheck==6))
+	if (g_pause || (stageCheck==3) || (stageCheck==6) || (stageCheck==9))
 	{
+		if (dbMode==DEB_Mode_SH2_Master || dbMode==DEB_Mode_SH2_Slave)
+		{
+			if (CheckKey('T'))
+			{
+				stageCheck=DEB_Mode_SH2_Master+1;
+				g_pause=0;
+			}
+		}
 		if (dbMode==3)
 		{
 			/* While paused - enable debugger keys */
@@ -1237,6 +1462,12 @@ int UpdateDebugger()
 			if (CheckKey(GLFW_KEY_DOWN) && Z80Offs<9)
 				Z80Offs++;
 		}
+
+		if (CheckKey('9'))
+			dbMode=DEB_Mode_SH2_Master;
+		if (CheckKey('0'))
+			dbMode=DEB_Mode_SH2_Slave;
+
 		if (CheckKey('P'))
 			dbMode=1;
 		if (dbMode==1)
@@ -1342,6 +1573,8 @@ int UpdateDebugger()
 		ClearKey('A');
 		ClearKey('Z');
 		ClearKey('Q');
+		ClearKey('9');
+		ClearKey('0');
 	}
 	ClearKey(GLFW_KEY_KP_0);
 	ClearKey(GLFW_KEY_KP_MULTIPLY);
@@ -1853,6 +2086,144 @@ void DrawSpritesForLine(int curLine,U8 zValue)
 
 U32* pixelPosition(int x,int y);
 
+#if ENABLE_32X_MODE
+
+extern U8 FRAMEBUFFER[0x00040000];
+
+extern U32 ActiveFrameBuffer;
+extern U16 BitmapModeRegister;
+
+#define USE_PALETTE		1
+
+void Draw32XScreenRowPalette(U32* out,U8* displayPtr,int displaySizeX)
+{
+	int x;
+#if USE_PALETTE
+	U8 gr,bg;
+#endif
+	U32 colour;
+	U8 pixel;
+
+	for (x=0;x<displaySizeX*8;x++)
+	{
+		pixel = *displayPtr++;
+
+#if !USE_PALETTE
+		colour = (pixel<<16)+(pixel<<8)+(pixel);
+#else
+		bg=CRAM[pixel*2+0];
+		gr=CRAM[pixel*2+1];
+
+		colour=0;
+		colour|=(gr&0x1F)<<(3+8+8);
+		colour|=(bg&0x7C)<<(1);
+		colour|=(bg&0x03)<<(6+8);
+		colour|=(gr&0xE0)<<(8-2);
+#endif
+		*out++=colour;
+	}
+}
+
+void Draw32XScreenRowDirect(U32* out,U8* displayPtr,int displaySizeX)
+{
+	int x;
+	U8 gr,bg;
+	U32 colour;
+/*	U8 pixel;*/
+
+	for (x=0;x<displaySizeX*8;x++)
+	{
+		bg = *displayPtr++;
+		gr = *displayPtr++;
+
+		colour=0;
+		colour|=(gr&0x1F)<<(3+8+8);
+		colour|=(bg&0x7C)<<(1);
+		colour|=(bg&0x03)<<(6+8);
+		colour|=(gr&0xE0)<<(8-2);
+		*out++=colour;
+	}
+}
+
+void Draw32XScreenRowRLE(U32* out,U8* displayPtr,int displaySizeX)
+{
+	int x=0;
+	U8 gr,bg;
+	U32 colour=0;
+	U8 pixel;
+	U16 rle=0;
+
+	while (x<displaySizeX*8)
+	{
+		if (rle==0)
+		{
+			rle = *displayPtr++;
+			pixel = *displayPtr++;
+
+			bg=CRAM[pixel*2+0];
+			gr=CRAM[pixel*2+1];
+
+			colour=0;
+			colour|=(gr&0x1F)<<(3+8+8);
+			colour|=(bg&0x7C)<<(1);
+			colour|=(bg&0x03)<<(6+8);
+			colour|=(gr&0xE0)<<(8-2);
+
+			rle++;
+			continue;
+		}
+		else
+		{
+			rle--;
+		}
+
+		*out++=colour;
+		x++;
+	}
+}
+
+
+void Draw32XScreenRow(int y,U32* out,U8* zPos)
+{
+	int displaySizeX = (VDP_Registers[12]&0x01) ? 40 : 32;
+	U16 lineOffset;
+	U8* displayPtr;
+
+	UNUSED_ARGUMENT(zPos);
+
+	if (!ActiveFrameBuffer)
+		displayPtr=&FRAMEBUFFER[0x20000];
+	else
+		displayPtr=&FRAMEBUFFER[0];
+
+#if 0
+	lineOffset = FRAMEBUFFER[y*2+0]<<8;
+	lineOffset|= FRAMEBUFFER[y*2+1];
+#else
+	lineOffset = displayPtr[y*2+0]<<8;
+	lineOffset|= displayPtr[y*2+1];
+#endif
+
+	displayPtr+=lineOffset*2;
+
+	switch (BitmapModeRegister&0x0003)
+	{
+	case 0:
+		return;
+	case 1:
+		Draw32XScreenRowPalette(out,displayPtr,displaySizeX);
+		return;
+	case 2:
+		Draw32XScreenRowDirect(out,displayPtr,displaySizeX);
+		return;
+	case 3:
+		Draw32XScreenRowRLE(out,displayPtr,displaySizeX);
+		return;
+	}
+}
+
+#endif
+
 #if !SMS_MODE
 void VID_DrawScreen(int y)
 {
@@ -1863,6 +2234,9 @@ void VID_DrawScreen(int y)
 		DisplayFillBGColourLine(pixel,320);
 
 		memset(zBuffer,0,40*8);
+#if ENABLE_32X_MODE
+		Draw32XScreenRow(y,pixel,zPos);
+#endif
 		DrawScreenRow(y,0,0x02,pixel,zPos);
 		DrawScreenRow(y,1,0x01,pixel,zPos);
 		DrawSpritesForLine(128+y,0x04);

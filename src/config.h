@@ -26,19 +26,23 @@ THE SOFTWARE.
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#define LINE_LENGTH			((228)*4)		/* 228 / 227 alternating */
-#define WIDTH 				LINE_LENGTH
-#define HEIGHT 				(262*2)
-#define BPP				4
-#define DEPTH				32
+#define LINE_LENGTH			((228)*4)					/* 228 / 227 alternating */
+#define WIDTH 					(LINE_LENGTH)
+#define HEIGHT 					(262*2)
+#define BPP							(4)
+#define DEPTH						(32)
 
 #define CYCLES_PER_LINE			(450/2)
 #define CYCLES_PER_FRAME		(CYCLES_PER_LINE*312)
 #define FRAMES_PER_SECOND		(60)
 
+#define PAL_PRETEND					0
+
 #define ENABLE_DEBUGGER			1
 
-#define SMS_MODE			0			/* Attempt to emulate SMS using megadrive core */
+#define	ENABLE_32X_MODE			0
+
+#define SMS_MODE						0			/* Attempt to emulate SMS using megadrive core */
 #define ENABLE_SMS_BIOS			0
 #define SMS_CART_MISSING		0
 

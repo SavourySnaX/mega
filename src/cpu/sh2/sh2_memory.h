@@ -1,5 +1,5 @@
 /*
- * mytypes
+ * SH2_memory.h
 
 Copyright (c) 2011 Lee Hammerton
 
@@ -23,22 +23,20 @@ THE SOFTWARE.
 
  */
 
-#ifndef __MYTYPES_H
-#define __MYTYPES_H
+#ifndef __SH2_MEMORY_H
+#define __SH2_MEMORY_H
 
-#define SOFT_BREAK	{ char* bob=0; 	*bob=0; }
+#include "mytypes.h"
 
-#include <stdint.h>
+void SH2_Write_Long(SH2_State* cpu,U32 adr,U32 data);		/* Writes don't need to distinguish between instruction and data stream */
+void SH2_Write_Word(SH2_State* cpu,U32 adr,U16 data);
+void SH2_Write_Byte(SH2_State* cpu,U32 adr,U8 data);
 
-typedef	int8_t			S8;
-typedef	int16_t			S16;
-typedef	int32_t			S32;
-typedef	int64_t			S64;
+U32 SH2_Read_Long(SH2_State* cpu,U32 adr,U8 dataFetch);
+U16 SH2_Read_Word(SH2_State* cpu,U32 adr,U8 dataFetch);
+U8 SH2_Read_Byte(SH2_State* cpu,U32 adr,U8 dataFetch);
 
-typedef	uint8_t			U8; 
-typedef	uint16_t		U16;
-typedef	uint32_t		U32;
-typedef	uint64_t		U64;
+U16 SH2_Debug_Read_Word(SH2_State* cpu,U32 adr);		/* Ensures cache is not affected */
 
-#endif/*__MYTYPES_H*/
+#endif/*__SH2_H*/
 

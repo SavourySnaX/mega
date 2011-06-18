@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 #define DEB_Mode_68000				(0)
 #define DEB_Mode_Z80					(3)
+#define DEB_Mode_SH2_Master		(6)
+#define DEB_Mode_SH2_Slave		(9)
 
 #if ENABLE_DEBUGGER
 

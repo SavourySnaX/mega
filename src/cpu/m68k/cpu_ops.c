@@ -7066,6 +7066,46 @@ U32 CPU_RESET(U32 stage,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,
 }
 
 
+U32 CPU_LINEF(U32 stage,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(stage);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+	/* Need to check ILLEGAL instructions.. this only works, if PC -2 */
+
+	switch (stage)
+	{
+		case 0:
+			return 1;
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+		case 15:
+		case 16:
+		case 17:
+		case 18:
+			return PROCESS_EXCEPTION(1,stage-1,0x2C);
+	}
+	return 0;
+}
+
 U32 CPU_LINEA(U32 stage,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
 {
 	UNUSED_ARGUMENT(stage);

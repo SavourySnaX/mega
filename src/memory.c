@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "config.h"
 
@@ -821,16 +822,16 @@ U8 VDP_StatusRegisterHI()
 	return 0x36;		/* 0011 01   Fifo Empty set, fifo full clear  (TODO implement FIFO) */
 }
 
+extern U8 inHBlank;
+extern U8 inVBlank;
+
 U8 VDP_StatusRegisterLO()
 {
 /*
 	printf("TODO : Status Read LO\n");
 */
 
-	if ((lineNo <=23) || (lineNo>=308))			/* crude vblank --- this is very wrong */
-		return 0x08;
-
-	return 0x00;			/* TODO (ALL) */
+	return 0x00 | (inVBlank<<3) | (inHBlank<<2);			/* TODO (rest - h and vblank okish) */
 }
 
 U32	longWriteMode=0;
@@ -1456,6 +1457,11 @@ void MEM_LoadState(FILE *inStream)
 	}
 }
 
+#if ENABLE_32X_MODE
+extern U8* cpu68kbios;
+extern U32 cpu68kbiosSize;
+#endif
+
 U8 MEM_getByte_CartRom(U32 upper24,U32 lower16)
 {
 	return cartRom[ ((upper24 - 0x00)<<16) | lower16];
@@ -1593,9 +1599,359 @@ void IO_GetRegisterContents(U16 offset,char *buffer)
 
 extern U16 keyStatusJoyA;
 
+#if ENABLE_32X_MODE
+
+extern U8 CRAM[0x200];
+extern U8 FRAMEBUFFER[0x00040000];
+extern U8 SDRAM[0x00040000];
+extern U8 SH2_68K_COMM_REGISTER[16];
+
+extern U16 SH2_PWMControlRegister;
+extern U16 SH2_PWMCycleRegister;
+extern U16 SH2_PWMLchPulseWidthRegister;
+extern U16 SH2_PWMRchPulseWidthRegister;
+extern U16 SH2_PWMMonoPulseWidthRegister;
+
+U16 AdapterControlRegister=0x0080;
+U16 InterruptControlRegister=0x0000;
+U16 BankSetRegister=0x0000;
+U16 DREQControlRegister=0x0000;
+U16 DREQSourceAddressHi=0x0000;
+U16 DREQSourceAddressLo=0x0000;
+U16 DREQDestinationAddressHi=0x0000;
+U16 DREQDestinationAddressLo=0x0000;
+U16 DREQLengthRegister=0x0000;
+U16 FIFORegister=0x0000;
+U16 SegaTVRegister=0x0000;
+
+void SwapTo32XModeMemoryMap();
+void SwapToStandardMemoryMap();
+
+#include "sh2.h"
+extern SH2_State* master;
+extern SH2_State* slave;
+
+U16 FIFO_BUFFER[8];
+
+U8 curFifoWrite=0;
+
+void FIFO_ADD(U16 data)
+{
+	if (curFifoWrite==8)
+	{
+		DREQControlRegister|=0x80;				/* Set FIFO full now */
+		return;
+	}
+	DREQControlRegister&=~0x80;				/* Set FIFO free now */
+	FIFO_BUFFER[curFifoWrite]=data;
+	curFifoWrite++;
+
+	SH2_SignalDAck(master);
+	SH2_SignalDAck(slave);
+}
+
+U16 FIFO_GET()
+{
+	U16 retVal=0;
+
+	if (curFifoWrite>0)
+	{
+		retVal=FIFO_BUFFER[0];
+		memmove(&FIFO_BUFFER[0],&FIFO_BUFFER[1],2*7);
+		curFifoWrite--;
+		DREQControlRegister&=~0x80;				/* Set FIFO free now */
+	}
+
+	return retVal;
+}
+
+U8 MD_SYS_32X_READ(U16 adr)
+{
+	if (adr>=0x20 && adr<=0x2F)
+	{
+		return SH2_68K_COMM_REGISTER[adr-0x20]; 
+	}
+
+	switch (adr)
+	{
+	case 0x00:
+		return AdapterControlRegister>>8;
+	case 0x01:
+		return AdapterControlRegister&0xFF;
+	case 0x02:
+		return InterruptControlRegister>>8;
+	case 0x03:
+		return InterruptControlRegister&0xFF;
+	case 0x04:
+		return BankSetRegister>>8;
+	case 0x05:
+		return BankSetRegister&0xFF;
+	case 0x06:
+		return DREQControlRegister>>8;
+	case 0x07:
+		return DREQControlRegister&0xFF;
+	case 0x08:
+		return DREQSourceAddressHi>>8;
+	case 0x09:
+		return DREQSourceAddressHi&0xFF;
+	case 0x0A:
+		return DREQSourceAddressLo>>8;
+	case 0x0B:
+		return DREQSourceAddressLo&0xFF;
+	case 0x0C:
+		return DREQDestinationAddressHi>>8;
+	case 0x0D:
+		return DREQDestinationAddressHi&0xFF;
+	case 0x0E:
+		return DREQDestinationAddressLo>>8;
+	case 0x0F:
+		return DREQDestinationAddressLo&0xFF;
+	case 0x10:
+		return DREQLengthRegister>>8;
+	case 0x11:
+		return DREQLengthRegister&0xFF;
+	case 0x12:
+		return 0xFF;		/* Write only	*/
+	case 0x13:
+		return 0xFF;		/* Write only	*/
+	case 0x1A:
+		return SegaTVRegister>>8;
+	case 0x1B:
+		return SegaTVRegister&0xFF;
+	case 0x30:
+		return SH2_PWMControlRegister>>8;
+	case 0x31:
+		return SH2_PWMControlRegister&0xFF;
+	case 0x32:
+		return SH2_PWMCycleRegister>>8;
+	case 0x33:
+		return SH2_PWMCycleRegister&0xFF;
+	case 0x34:
+		return (SH2_PWMLchPulseWidthRegister>>8)&0xC0;
+	case 0x35:
+		return (SH2_PWMLchPulseWidthRegister&0xFF)&0x00;
+	case 0x36:
+		return (SH2_PWMRchPulseWidthRegister>>8)&0xC0;
+	case 0x37:
+		return (SH2_PWMRchPulseWidthRegister&0xFF)&0x00;
+	case 0x38:
+		return (SH2_PWMMonoPulseWidthRegister>>8)&0xC0;
+	case 0x39:
+		return (SH2_PWMMonoPulseWidthRegister&0xFF)&0x00;
+	}
+
+	DEB_PauseEmulation(DEB_Mode_68000,"Unhandled Read 32X SYS Register");
+	return 0xFF;
+}
+
+extern U8 SH2_Master_AdapterControlRegister;
+extern U8 SH2_Slave_AdapterControlRegister;
+
+void MD_SYS_32X_WRITE(U16 adr,U8 byte)
+{
+	if (adr>=0x20 && adr<=0x2F)
+	{
+		SH2_68K_COMM_REGISTER[adr-0x20]=byte;
+		return;
+	}
+
+	switch (adr)
+	{
+	case 0x00:
+		AdapterControlRegister&=0x00FF;
+		AdapterControlRegister|=byte<<8;
+		return;
+	case 0x01:
+		if (((AdapterControlRegister&0x0002)==0) && ((byte&0x02)==2))
+		{
+			SH2_Reset(master);
+			SH2_Reset(slave);
+		}
+
+		AdapterControlRegister&=0xFF00;
+		AdapterControlRegister|=byte;
+
+		if ((AdapterControlRegister&0x0001))
+		{
+			SwapTo32XModeMemoryMap();
+		}
+		else
+		{
+			SwapToStandardMemoryMap();
+		}
+		return;
+	case 0x02:
+		InterruptControlRegister&=0x00FF;
+		InterruptControlRegister|=byte<<8;
+		return;
+	case 0x03:
+		InterruptControlRegister&=0xFF00;
+		InterruptControlRegister|=byte&0xFF;
+		if (InterruptControlRegister&0x01)
+		{
+			if (SH2_Master_AdapterControlRegister&0x02)
+			{
+				SH2_Interrupt(master,9);
+			}
+		}
+		if (InterruptControlRegister&0x02)
+		{
+			if (SH2_Slave_AdapterControlRegister&0x02)
+			{
+				SH2_Interrupt(slave,9);
+			}
+		}
+		return;
+	case 0x04:
+		BankSetRegister&=0x00FF;
+		BankSetRegister|=byte<<8;
+		return;
+	case 0x05:
+		BankSetRegister&=0xFF00;
+		BankSetRegister|=byte&0xFF;
+		return;
+	case 0x06:
+		DREQControlRegister&=0x00FF;
+		DREQControlRegister|=byte<<8;
+		return;
+	case 0x07:
+		DREQControlRegister&=0xFF80;
+		DREQControlRegister|=byte&0x7F;
+		return;
+	case 0x08:
+		return;
+	case 0x09:
+		DREQSourceAddressHi&=0xFF00;
+		DREQSourceAddressHi|=byte&0xFF;
+		return;
+	case 0x0A:
+		DREQSourceAddressLo&=0x00FF;
+		DREQSourceAddressLo|=byte<<8;
+		return;
+	case 0x0B:
+		DREQSourceAddressLo&=0xFF01;
+		DREQSourceAddressLo|=byte&0xFE;
+		return;
+	case 0x0C:
+		return;
+	case 0x0D:
+		DREQDestinationAddressHi&=0xFF00;
+		DREQDestinationAddressHi|=byte&0xFF;
+		return;
+	case 0x0E:
+		DREQDestinationAddressLo&=0x00FF;
+		DREQDestinationAddressLo|=byte<<8;
+		return;
+	case 0x0F:
+		DREQDestinationAddressLo&=0xFF00;
+		DREQDestinationAddressLo|=byte&0xFF;
+		return;
+	case 0x10:
+		DREQLengthRegister&=0x00FF;
+		DREQLengthRegister|=byte<<8;
+		return;
+	case 0x11:
+		DREQLengthRegister&=0xFF03;
+		DREQLengthRegister|=byte&0xFC;
+		return;
+	case 0x12:
+		FIFORegister&=0x00FF;
+		FIFORegister|=byte<<8;
+		return;
+	case 0x13:
+		FIFORegister&=0xFF00;
+		FIFORegister|=byte&0xFF;
+		FIFO_ADD(FIFORegister);
+		return;
+	case 0x1A:
+		SegaTVRegister&=0x00FF;
+		SegaTVRegister|=byte<<8;
+		return;
+	case 0x1B:
+		SegaTVRegister&=0xFF00;
+		SegaTVRegister|=byte&0xFF;
+		return;
+	case 0x30:
+		return;				/* Read only */
+	case 0x31:
+		SH2_PWMControlRegister&=0xFF80;
+		SH2_PWMControlRegister|=byte&0x7F;
+		return;
+	case 0x32:
+		SH2_PWMCycleRegister&=0x00FF;
+		SH2_PWMCycleRegister|=byte<<8;
+		return;
+	case 0x33:
+		SH2_PWMCycleRegister&=0xFF00;
+		SH2_PWMCycleRegister|=byte&0xFF;
+		return;
+	case 0x34:
+		SH2_PWMLchPulseWidthRegister&=0xC0FF;
+		SH2_PWMLchPulseWidthRegister|=(byte&0x3F)<<8;
+		return;
+	case 0x35:
+		SH2_PWMLchPulseWidthRegister&=0xFF00;
+		SH2_PWMLchPulseWidthRegister|=byte&0xFF;
+		return;
+	case 0x36:
+		SH2_PWMRchPulseWidthRegister&=0xC0FF;
+		SH2_PWMRchPulseWidthRegister|=(byte&0x3F)<<8;
+		return;
+	case 0x37:
+		SH2_PWMRchPulseWidthRegister&=0xFF00;
+		SH2_PWMRchPulseWidthRegister|=byte&0xFF;
+		return;
+	case 0x38:
+		SH2_PWMMonoPulseWidthRegister&=0xC0FF;
+		SH2_PWMMonoPulseWidthRegister|=(byte&0x3F)<<8;
+		return;
+	case 0x39:
+		SH2_PWMMonoPulseWidthRegister&=0xFF00;
+		SH2_PWMMonoPulseWidthRegister|=byte&0xFF;
+		return;
+	}
+
+	DEB_PauseEmulation(DEB_Mode_68000,"Unhandled Write 32X SYS Register");
+}
+
+U8 VDP_32X_Read(U16 adr,int accessor);
+void VDP_32X_Write(U16 adr,U8 byte,int accessor);
+#endif
+
 U8 MEM_getByte_IO(U32 upper24,U32 lower16)
 {
 	UNUSED_ARGUMENT(upper24);
+#if ENABLE_32X_MODE
+	
+	if ((lower16&0xFFEF)==0x30EC)
+		return 'M';
+	if ((lower16&0xFFEF)==0x30ED)
+		return 'A';
+	if ((lower16&0xFFEF)==0x30EE)
+		return 'R';
+	if ((lower16&0xFFEF)==0x30EF)
+		return 'S';
+
+	if (lower16>=0x5100 && lower16<0x513A)
+		return MD_SYS_32X_READ(lower16-0x5100);
+
+	if (lower16>=0x5180 && lower16<=0x51FF)
+	{
+		if (AdapterControlRegister&0x8000)
+			return 0xFF;
+		return VDP_32X_Read(lower16-0x5180,DEB_Mode_68000);
+	}
+
+	if (lower16>=0x5200 && lower16<0x5400)
+	{
+		if (AdapterControlRegister&0x8000)
+			return 0xFF;
+		return CRAM[lower16-0x5200];
+	}
+
+
+
+#endif
 	if (lower16 == 0x1100)
 	{
 /*		printf("BUS REQUEST FOR Z80 (returning free!)\n");		TODO FIX ME - z80 bus might not always be available!!*/
@@ -1703,6 +2059,32 @@ void MEM_setByte_SystemRam(U32 upper24,U32 lower16,U8 byte)
 void MEM_setByte_IO(U32 upper24,U32 lower16,U8 byte)
 {
 	UNUSED_ARGUMENT(upper24);
+#if ENABLE_32X_MODE
+
+	if (lower16>=0x5100 && lower16<0x513A)
+	{
+		MD_SYS_32X_WRITE(lower16-0x5100,byte);
+		return;
+	}
+
+	if (lower16>=0x5180 && lower16<=0x51FF)
+	{
+		if (AdapterControlRegister&0x8000)
+			return;
+		VDP_32X_Write(lower16-0x5180,byte,DEB_Mode_68000);
+		return;
+	}
+
+	if (lower16>=0x5200 && lower16<0x5400)
+	{
+		if (AdapterControlRegister&0x8000)
+			return;
+		CRAM[lower16-0x5200]=byte;
+		return;
+	}
+
+#endif
+
 	if (lower16 == 0x1100)
 	{
 		Z80_regs.stopped = byte&0x01;
@@ -1811,10 +2193,214 @@ void MEM_setLong(U32 address, U32 dword)
 	MEM_setWord(address+2,dword&0xFFFF);
 }
 
+U32 numBanks;
+
+#if ENABLE_32X_MODE
+
+extern U32 ActiveFrameBuffer;
+
+U8	Vector70[4]={0xFF,0xFF,0xFF,0xFF};			/* Not sure what its default should be! */
+
+U8 MEM_getByte_BiosOrCartRom(U32 upper24,U32 lower16)
+{
+	UNUSED_ARGUMENT(upper24);
+	if (lower16>=0x70 && lower16<=0x73)
+		return Vector70[lower16-0x70];
+
+	if (lower16<cpu68kbiosSize)
+	{
+		return cpu68kbios[lower16];
+	}
+	return cartRom[lower16];
+}
+
+void MEM_setByte_BiosOrCartRom(U32 upper24,U32 lower16,U8 byte)
+{
+	UNUSED_ARGUMENT(upper24);
+	if (lower16>=0x70 && lower16<=0x73)
+	{
+		Vector70[lower16-0x70]=byte;
+		return;
+	}
+
+	DEB_PauseEmulation(DEB_Mode_68000,"Unmapped rom write");
+}
+
+void MEM_setByte_FRAMEBUFFER(U32 upper24,U32 lower16,U8 byte)
+{
+	if (AdapterControlRegister&0x8000)
+		return;
+	if (ActiveFrameBuffer)
+		FRAMEBUFFER[((upper24-0x84)<<16) + lower16 + 0x20000]=byte;
+	else
+		FRAMEBUFFER[((upper24-0x84)<<16) + lower16]=byte;
+}
+
+U8 MEM_getByte_FRAMEBUFFER(U32 upper24,U32 lower16)
+{
+	if (AdapterControlRegister&0x8000)
+		return 0xFF;
+	if (ActiveFrameBuffer)
+		return FRAMEBUFFER[((upper24-0x84)<<16) + lower16 + 0x20000];
+	else
+		return FRAMEBUFFER[((upper24-0x84)<<16) + lower16];
+}
+
+void MEM_setByte_CartRomUpper(U32 upper24,U32 lower16,U8 byte)
+{
+	UNUSED_ARGUMENT(upper24);
+	UNUSED_ARGUMENT(lower16);
+	UNUSED_ARGUMENT(byte);
+
+	DEB_PauseEmulation(DEB_Mode_68000,"Write to upper rom");
+}
+
+U8 MEM_getByte_CartRomUpper(U32 upper24,U32 lower16)
+{
+	return cartRom[((upper24-0x88)<<16) + lower16];
+}
+
+void MEM_setByte_CartRomBanked(U32 upper24,U32 lower16,U8 byte)
+{
+	UNUSED_ARGUMENT(upper24);
+	UNUSED_ARGUMENT(lower16);
+	UNUSED_ARGUMENT(byte);
+
+	DEB_PauseEmulation(DEB_Mode_68000,"Write to rom banked");
+}
+
+U8 MEM_getByte_CartRomBanked(U32 upper24,U32 lower16)
+{
+	U32 bankedAddress=((upper24-0x90)<<16) + lower16;
+
+	switch (BankSetRegister&0x03)
+	{
+	case 0:
+		return cartRom[bankedAddress];
+	case 1:
+		return cartRom[0x100000+bankedAddress];
+	case 2:
+		return cartRom[0x200000+bankedAddress];
+	case 3:
+		return cartRom[0x300000+bankedAddress];
+	}
+
+	return 0xFF;			/* We can't reach here */
+}
+
+
+void SwapTo32XModeMemoryMap()
+{
+	unsigned int a;
+
+	mem_read[0] = MEM_getByte_BiosOrCartRom;
+	mem_write[0]= MEM_setByte_BiosOrCartRom;
+
+	mem_read[0x84] = MEM_getByte_FRAMEBUFFER;
+	mem_read[0x85] = MEM_getByte_FRAMEBUFFER;
+/*	mem_read[0x86] = MEM_getByte_FRAMEBUFFER;				DON'T HANDLE FRAME OVER STUFF YET
+	mem_read[0x87] = MEM_getByte_FRAMEBUFFER;*/
+	mem_write[0x84] = MEM_setByte_FRAMEBUFFER;
+	mem_write[0x85] = MEM_setByte_FRAMEBUFFER;
+/*	mem_write[0x86] = MEM_setByte_FRAMEBUFFER;
+	mem_write[0x87] = MEM_setByte_FRAMEBUFFER;*/
+
+	for (a=0;a<8;a++)
+	{
+		mem_read[0x88+a] = MEM_getByte_CartRomUpper;
+		mem_write[0x88+a]= MEM_setByte_CartRomUpper;
+	}
+	for (a=0;a<16;a++)
+	{
+		mem_read[0x90+a] = MEM_getByte_CartRomBanked;
+		mem_write[0x90+a]= MEM_setByte_CartRomBanked;
+	}
+}
+
+void SwapToStandardMemoryMap()
+{
+	unsigned int a;
+
+	mem_read[0] = MEM_getByte_CartRom;
+	mem_write[0]= MEM_setByte_CartRom;
+
+	mem_read[0x84] = MEM_getByteUnmapped;
+	mem_read[0x85] = MEM_getByteUnmapped;
+	mem_read[0x86] = MEM_getByteUnmapped;
+	mem_read[0x87] = MEM_getByteUnmapped;
+	mem_write[0x84] = MEM_setByteUnmapped;
+	mem_write[0x85] = MEM_setByteUnmapped;
+	mem_write[0x86] = MEM_setByteUnmapped;
+	mem_write[0x87] = MEM_setByteUnmapped;
+
+	for (a=0;a<8;a++)
+	{
+		mem_read[0x88+a] = MEM_getByteUnmapped;
+		mem_write[0x88+a]= MEM_setByteUnmapped;
+	}
+	for (a=0;a<16;a++)
+	{
+		mem_read[0x90+a] = MEM_getByteUnmapped;
+		mem_write[0x90+a]= MEM_setByteUnmapped;
+	}
+}
+#endif
+
+void InitialiseStandardMemoryMap()
+{
+	unsigned int a;
+
+	for (a=0;a<256;a++)
+	{
+		mem_read[a]=MEM_getByteUnmapped;
+		mem_write[a]=MEM_setByteUnmapped;
+	}
+
+	if (numBanks>=0x40)
+	{
+		numBanks=0x40;
+	}
+
+	for (a=0;a<numBanks;a++)
+	{
+		mem_read[a] = MEM_getByte_CartRom;
+		mem_write[a]= MEM_setByte_CartRom;
+	}
+
+	for (a=0xC0;a<0xE0;a++)
+	{
+		mem_read[a] = MEM_getByte_VDP;
+		mem_write[a]= MEM_setByte_VDP;
+	}
+
+	for (a=0xE0;a<0x100;a++)
+	{
+		mem_read[a] = MEM_getByte_SystemRam;
+		mem_write[a]= MEM_setByte_SystemRam;
+	}
+
+	mem_read[0xA0] = MEM_getByte_Z80;
+	mem_write[0xA0]= MEM_setByte_Z80;
+	mem_read[0xA1] = MEM_getByte_IO;
+	mem_write[0xA1]= MEM_setByte_IO;
+
+	if (SRAM)
+	{
+		for (a=0;a<=(SRAM_Size/65536);a++)
+		{
+			/* TODO add sanity check that SRAM not mapping ontop of some other allocated region	-- e.g. ps4 */
+			mem_read[((SRAM_StartAddress&0x00FF0000)>>16)+a]=MEM_getByte_SRAM;
+			mem_write[((SRAM_StartAddress&0x00FF0000)>>16)+a]=MEM_setByte_SRAM;
+		}
+	}
+
+}
+
 void MEM_Initialise(unsigned char *_romPtr,unsigned int num64Banks)
 {
 	unsigned int a=0;
 
+	numBanks=num64Banks;
 	systemRam = malloc(SYS_RAM_SIZE);
 	z80Ram = malloc(Z80_RAM_SIZE);
 	cartRom = _romPtr;
@@ -1850,7 +2436,11 @@ void MEM_Initialise(unsigned char *_romPtr,unsigned int num64Banks)
 		ioRegisters[a]=0x00;
 	}
 
-	ioRegisters[0x01]=0xA0;
+#if PAL_PRETEND
+	ioRegisters[0x01]=0xE0;				/* MDL (0 - domestic , 1 - overseas) VMD (0 - NTSC clock, 1 - PAL clock) DSK (0 floppy connected, 1 floppy disconnected) RSV(reserved) (VR3-VR0 version) */
+#else
+	ioRegisters[0x01]=0xA0;				/* MDL (0 - domestic , 1 - overseas) VMD (0 - NTSC clock, 1 - PAL clock) DSK (0 floppy connected, 1 floppy disconnected) RSV(reserved) (VR3-VR0 version) */
+#endif
 	ioRegisters[0x03]=0x7F;
 	ioRegisters[0x05]=0x7F;
 	ioRegisters[0x07]=0x7F;
@@ -1858,48 +2448,6 @@ void MEM_Initialise(unsigned char *_romPtr,unsigned int num64Banks)
 	ioRegisters[0x15]=0xFF;
 	ioRegisters[0x1B]=0xFF;
 
-	for (a=0;a<256;a++)
-	{
-		mem_read[a]=MEM_getByteUnmapped;
-		mem_write[a]=MEM_setByteUnmapped;
-	}
 
-	if (num64Banks>=0x40)
-	{
-		num64Banks=0x40;
-	}
-
-	for (a=0;a<num64Banks;a++)
-	{
-		mem_read[a] = MEM_getByte_CartRom;
-		mem_write[a]= MEM_setByte_CartRom;
-	}
-
-	for (a=0xC0;a<0xE0;a++)
-	{
-		mem_read[a] = MEM_getByte_VDP;
-		mem_write[a]= MEM_setByte_VDP;
-	}
-
-	for (a=0xE0;a<0x100;a++)
-	{
-		mem_read[a] = MEM_getByte_SystemRam;
-		mem_write[a]= MEM_setByte_SystemRam;
-	}
-
-	mem_read[0xA0] = MEM_getByte_Z80;
-	mem_write[0xA0]= MEM_setByte_Z80;
-	mem_read[0xA1] = MEM_getByte_IO;
-	mem_write[0xA1]= MEM_setByte_IO;
-
-	if (SRAM)
-	{
-		for (a=0;a<=(SRAM_Size/65536);a++)
-		{
-			/* TODO add sanity check that SRAM not mapping ontop of some other allocated region	-- e.g. ps4 */
-			mem_read[((SRAM_StartAddress&0x00FF0000)>>16)+a]=MEM_getByte_SRAM;
-			mem_write[((SRAM_StartAddress&0x00FF0000)>>16)+a]=MEM_setByte_SRAM;
-		}
-	}
-
+	InitialiseStandardMemoryMap();
 }

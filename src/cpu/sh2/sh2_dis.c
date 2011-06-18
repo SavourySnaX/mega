@@ -1,0 +1,2081 @@
+/*
+ * SH2_dis.c
+
+Copyright (c) 2011 Lee Hammerton
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+ */
+
+#include <stdio.h>
+
+#include "config.h"
+#include "mytypes.h"
+#include "platform.h"
+
+#include "sh2.h"
+#include "sh2_memory.h"
+
+char SH2_mnemonicData[256];
+
+U16 SH2_DIS_BRAF_RM(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"BRAF R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_NEGC_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"NEGC R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_LDCL_AT_RM_INC_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"LDC.L @R%d+,GBR",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_TSTB_IMMEDIATE_AT_R0_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"TST.B #%08X,@(R0,GBR)",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_RTE(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"RTE");
+	
+	return 0;
+}
+
+U16 SH2_DIS_ORB_IMMEDIATE_AT_R0_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"OR.B #%08X,@(R0,GBR)",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_DMULUL_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"DMULU.L R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_STSL_SR_AT_DEC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STS.L SR,@-R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_LDCL_AT_RM_INC_SR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"LDC.L @R%d+,SR",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_ROTR_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"ROTR R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_EXTSB_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"EXTS.B R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVT_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOVT R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHLR8_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHLR8 R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_LDS_RM_PR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"LDS R%d,PR",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MACL_AT_RM_INC_AT_RN_INC(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MAC.L @R%d+,@R%d+",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CLRMAC(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CLRMAC");
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHAL_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHAL R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_AT_DISP_RM_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W @(%08X+R%d),R0",op2*2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_DMULSL_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"DMULS.L R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CMPHS_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CMP/HS R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_STCL_GBR_AT_DEC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STC.L GBR,@-R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_R0_AT_DISP_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W R0,@(%08X+R%d)",op2*2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_RM_AT_DEC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W R%d,@-R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CLRT(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CLRT");
+	
+	return 0;
+}
+
+U16 SH2_DIS_STS_MACH_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STS MACH,R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_STS_PR_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STS PR,R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_STC_GBR_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STC GBR,R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_STC_SR_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STC SR,R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_STC_VBR_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STC VBR,R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SLEEP(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SLEEP");
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_AT_DISP_GBR_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W @(%08X,GBR),R0",op1*2);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MULSW_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MULS.W R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CMPHI_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CMP/HI R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_BTS(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"BT/S @(%08X,PC)",((U32)((S8)op1))*2);
+	
+	return 0;
+}
+
+U16 SH2_DIS_OR_IMMEDIATE_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"OR #%08X,R0",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHLR16_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHLR16 R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_DIV0U(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"DIV0U");
+	
+	return 0;
+}
+
+U16 SH2_DIS_MULL_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MUL.L R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVA_AT_DISP_PC_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOVA @(%08X,PC),R0",op1*4);
+	
+	return 0;
+}
+
+U16 SH2_DIS_BSR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	if (op1&0x800)
+	{
+		op1|=0xF000;
+	}
+	sprintf(SH2_mnemonicData,"BSR @(%08X,PC)",((U32)((S16)op1))*2);
+	
+	return 0;
+}
+
+U16 SH2_DIS_NOT_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"NOT R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_R0_AT_DISP_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B R0,@(%08X,GBR)",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_AT_DISP_GBR_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L @(%08X,GBR),R0",op1*4);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_R0_AT_DISP_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B R0,@(%08X+R%d)",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CMPGE_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CMP/GE R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_NEG_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"NEG R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_ADDC_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"ADDC R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_DIV1_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"DIV1 R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SUBC_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SUBC R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_DIV0S_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"DIV0S R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_LDSL_AT_RM_INC_PR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"LDS.L @R%d+,PR",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_RM_AT_R0_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L R%d,@(R0,R%d)",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_AT_R0_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L @(R0+R%d),R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_RTS(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"RTS");
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHLL16_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHLL16 R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_STS_MACL_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STS MACL,R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_XTRCT_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"XTRCT R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SWAPW_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SWAP.W R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MULUW_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MULU.W R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_AT_R0_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B @(R0+R%d),R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CMPPL_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CMP/PL R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_AT_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L @R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_AND_IMMEDIATE_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"AND #%08X,R0",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CMPPZ_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CMP/PZ R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_EXTSW_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"EXTS.W R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_STSL_PR_AT_DEC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"STS.L PR,@-R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_JSR_AT_RM(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"JSR @R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_ROTCL_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"ROTCL R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHAR_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHAR R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_BRA(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	if (op1&0x800)
+	{
+		op1|=0xF000;
+	}
+	sprintf(SH2_mnemonicData,"BRA @(%08X,PC)",((U32)((S16)op1))*2);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_AT_RM_INC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W @R%d+,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_XOR_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"XOR R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_XOR_IMMEDIATE_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"XOR #%08X,R0",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_RM_AT_R0_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B R%d,@(R0,R%d)",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_RM_AT_DEC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B R%d,@-R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_AND_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"AND R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_AT_R0_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W @(R0+R%d),R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_AT_RM_INC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B @R%d+,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SWAPB_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SWAP.B R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHLR2_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHLR2 R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_AT_DISP_RM_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B @(%08X+R%d),R0",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_AT_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B @R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_EXTUB_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"EXTU.B R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CMPGT_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CMP/GT R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHLR_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHLR R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHLL8_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHLL8 R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHLL_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHLL R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_RM_AT_R0_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W R%d,@(R0,R%d)",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SHLL2_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SHLL2 R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_OR_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"OR R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOV_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_TST_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"TST R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_BFS(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"BF/S @(%08X,PC)",((U32)((S8)op1))*2);
+	
+	return 0;
+}
+
+U16 SH2_DIS_DT_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"DT R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_AT_DISP_PC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W @(%08X,PC),R%d",op2*2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_NOP(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"NOP");
+	
+	return 0;
+}
+
+U16 SH2_DIS_JMP_AT_RM(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"JMP @R%d",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_R0_AT_DISP_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L R0,@(%08X,GBR)",op1*4);
+	
+	return 0;
+}
+
+U16 SH2_DIS_LDC_RM_VBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"LDC R%d,VBR",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_AT_DISP_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L @(%08X+R%d),R%d",op3*4,op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_SUB_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"SUB R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_ADD_IMMEDIATE_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"ADD #%08X,R%d",(U32)((S8)op2),op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_RM_AT_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L R%d,@R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_ADD_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"ADD R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_R0_AT_DISP_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W R0,@(%08X,GBR)",op1*2);
+	
+	return 0;
+}
+
+U16 SH2_DIS_BT(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"BT @(%08X,PC)",((U32)((S8)op1))*2);
+	
+	return 0;
+}
+
+
+U16 SH2_DIS_CMPEQ_IMMEDIATE_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CMP/EQ #%08X,R0",(U32)((S8)op1));
+	
+	return 0;
+}
+
+U16 SH2_DIS_EXTUW_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"EXTU.W R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_AT_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W @R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_CMPEQ_RM_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"CMP/EQ R%d,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_RM_AT_DEC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L R%d,@-R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_RM_AT_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B R%d,@R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_BF(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"BF @(%08X,PC)",((U32)((S8)op1))*2);
+	
+	return 0;
+}
+
+U16 SH2_DIS_TST_IMMEDIATE_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"TST #%08X,R0",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVB_AT_DISP_GBR_R0(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.B @(%08X,GBR),R0",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVW_RM_AT_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.W R%d,@R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOV_IMMEDIATE_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV #%08X,R%d",(U32)((S8)op2),op1);
+	
+	return 0;
+}
+
+
+U16 SH2_DIS_LDC_RM_GBR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"LDC R%d,GBR",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_RM_AT_DISP_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L R%d,@(%08X+R%d)",op2,op3*4,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_AT_RM_INC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L @R%d+,R%d",op2,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_LDC_RM_SR(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"LDC R%d,SR",op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_MOVL_AT_DISP_PC_RN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+
+	sprintf(SH2_mnemonicData,"MOV.L @(%08X,PC),R%d",op2*4,op1);
+	
+	return 0;
+}
+
+U16 SH2_DIS_UNKNOWN(SH2_State* cpu,U32 adr,U16 op1,U16 op2,U16 op3,U16 op4,U16 op5,U16 op6,U16 op7,U16 op8)
+{
+	UNUSED_ARGUMENT(cpu);
+	UNUSED_ARGUMENT(adr);
+	UNUSED_ARGUMENT(op1);
+	UNUSED_ARGUMENT(op2);
+	UNUSED_ARGUMENT(op3);
+	UNUSED_ARGUMENT(op4);
+	UNUSED_ARGUMENT(op5);
+	UNUSED_ARGUMENT(op6);
+	UNUSED_ARGUMENT(op7);
+	UNUSED_ARGUMENT(op8);
+	sprintf(SH2_mnemonicData,"Unknown Instruction");
+	
+	return 0;
+}
