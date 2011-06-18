@@ -29,17 +29,17 @@ THE SOFTWARE.
 #include <string.h>
 #include <stdarg.h>
 
-#include "../config.h"
+#include "config.h"
 
-#include "../platform.h"
+#include "platform.h"
 
-#include "../cpu.h"
-#include "../cpu_dis.h"
-#include "../z80.h"
-#include "../z80_dis.h"
-#include "../mytypes.h"
+#include "cpu.h"
+#include "cpu_dis.h"
+#include "z80.h"
+#include "z80_dis.h"
+#include "mytypes.h"
 #include "debugger.h"
-#include "../memory.h"
+#include "memory.h"
 
 #include "font.h"
 

@@ -3,50 +3,49 @@
 
 LIBS=-lGL -lopenal -lglfw
 
-DEFINES=
-#-D__IGNORE_TYPES
+DEFINES=-Isrc/ -Isrc/audio -Isrc/gui/ -Isrc/cpu/m68k -Isrc/cpu/z80
 OPTIMISATIONS=-O3 -g
 CFLAGS=$(DEFINES) $(OPTIMISATIONS) -Wall -Wextra -Werror -Wuninitialized -Winit-self -Wstrict-aliasing -Wfloat-equal -Wshadow -pedantic-errors -ansi 
-#-Wconversion -ansi -pedantic-errors 
+#-Wconversion
 
-cheapDeps=*.h gui/*.h
+cheapDeps=src/*.h src/cpu/m68k/*.h src/gui/*.h src/audio/*.h
 
 megadrive=out/cpu68000.o out/cpu68000_ops.o out/cpu68000_dis.o out/cpuZ80.o out/cpuZ80_ops.o out/cpuZ80_dis.o out/sn76489.o out/ym2612.o out/memory.o out/debugger.o out/os.o
 
 mega:	$(megadrive)
 	gcc $(CFLAGS) $(megadrive) $(LIBS) -o mega
 
-out/cpu68000.o:	cpu.c $(cheapDeps)
+out/cpu68000.o:	src/cpu/m68k/cpu.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/cpu68000_ops.o:	cpu_ops.c $(cheapDeps)
+out/cpu68000_ops.o:	src/cpu/m68k/cpu_ops.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/cpu68000_dis.o:	cpu_dis.c $(cheapDeps)
+out/cpu68000_dis.o:	src/cpu/m68k/cpu_dis.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/cpuZ80.o:	z80.c $(cheapDeps)
+out/cpuZ80.o:	src/cpu/z80/z80.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/cpuZ80_ops.o:	z80_ops.c $(cheapDeps)
+out/cpuZ80_ops.o:	src/cpu/z80/z80_ops.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/cpuZ80_dis.o:	z80_dis.c $(cheapDeps)
+out/cpuZ80_dis.o:	src/cpu/z80/z80_dis.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/sn76489.o:	psg.c $(cheapDeps)
+out/sn76489.o:	src/audio/psg.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/ym2612.o:	lj_ym2612.c $(cheapDeps)
+out/ym2612.o:	src/audio/lj_ym2612.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/memory.o:	memory.c $(cheapDeps)
+out/memory.o:	src/memory.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/debugger.o:	gui/debugger.c $(cheapDeps)
+out/debugger.o:	src/gui/debugger.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/os.o:	mgmain.c
+out/os.o:	src/mgmain.c
 	gcc -c $(CFLAGS) $< -o $@ 
 
 
