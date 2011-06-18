@@ -45,7 +45,7 @@ out/memory.o:	src/memory.c $(cheapDeps)
 out/debugger.o:	src/gui/debugger.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@
 
-out/os.o:	src/mgmain.c
+out/os.o:	src/mgmain.c $(cheapDeps)
 	gcc -c $(CFLAGS) $< -o $@ 
 
 
